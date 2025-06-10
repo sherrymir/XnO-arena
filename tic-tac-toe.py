@@ -1,9 +1,14 @@
 import random
+
+positions = ["TopL", "TopC", "TopR",
+"MidL", "MidC", "MidR",
+"BotL", "BotC", "BotR"]
+
 table = {"TopL": " ","TopC": " ","TopR": " ",
          "MidL": " ","MidC": " ","MidR": " ",
          "BotL": " ","BotC": " ","BotR": " "}
 
-def The_Table(board: dict) -> None:
+def The_Table(board):
     print(board["TopL"]+"|"+board["TopC"]+"|"+board["TopR"])
     print("-+-+-")
     print(board["MidL"]+"|"+board["MidC"]+"|"+board["MidR"])
@@ -23,9 +28,7 @@ def Check_Winner(table: dict,turn: str) -> bool:
     return False
 
 def computer_move() -> str:
-    positions = ["TopL", "TopC", "TopR",
-    "MidL", "MidC", "MidR",
-    "BotL", "BotC", "BotR"]
+    global positions
     while True:
         random.shuffle(positions)
         random_move = random.choice(positions)
@@ -40,9 +43,18 @@ def Main():
     The_Table(table)
     turn = "X"
 
-    for _ in range(9):
+    while " " in table.values(): 
         if turn == "X":
             choice = input(f"Where do you wanna put {turn} e.g(TopL,MidC,BotR): ")
+
+            if choice not in table:
+                print("Please enter the Valid position.")
+                continue
+
+            if table[choice] != " ":
+                print("The square is already occupied.")
+                continue
+
             table[choice] = turn
             The_Table(table)
             print()
