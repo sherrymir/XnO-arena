@@ -1,49 +1,75 @@
-def print_board(board):
-    print(board["TopL"] + "|" + board["TopC"] + "|" + board["TopR"])
-    print("-+-+-")
-    print(board["MidL"] + "|" + board["MidC"] + "|" + board["MidR"])
-    print("-+-+-")
-    print(board["BotL"] + "|" + board["BotC"] + "|" + board["BotR"])
+import random
+table = {"TopL": " ","TopC": " ","TopR": " ",
+         "MidL": " ","MidC": " ","MidR": " ",
+         "BotL": " ","BotC": " ","BotR": " "}
 
-def check_winner(board, turn):
-    win_conditions = [
+def The_Table(board: dict) -> None:
+    print(board["TopL"]+"|"+board["TopC"]+"|"+board["TopR"])
+    print("-+-+-")
+    print(board["MidL"]+"|"+board["MidC"]+"|"+board["MidR"])
+    print("-+-+-")
+    print(board["BotL"]+"|"+board["BotC"]+"|"+board["BotR"])
+
+def Check_Winner(table: dict,turn: str) -> bool:
+    win_conditions = [ 
         ["TopL", "TopC", "TopR"], ["MidL", "MidC", "MidR"], ["BotL", "BotC", "BotR"],
-        ["TopL", "MidL", "BotL"], ["TopC", "MidC", "BotC"], ["TopR", "MidR", "BotR"],
+        ["TopL", "MidL", "BotL"], ["TopC", "MidC", "BotC"], ["TopR", "MidR", "BotR"],  
         ["TopL", "MidC", "BotR"], ["TopR", "MidC", "BotL"]
-    ]
+        ]
     
     for condition in win_conditions:
-        if all(board[pos] == turn for pos in condition):
+        if all(table[pos] == turn for pos in condition):
             return True
     return False
 
-def main():
-    board = {
-        "TopL": " ", "TopC": " ", "TopR": " ",
-        "MidL": " ", "MidC": " ", "MidR": " ",
-        "BotL": " ", "BotC": " ", "BotR": " "
-    }
+def computer_move() -> str:
+    positions = ["TopL", "TopC", "TopR",
+    "MidL", "MidC", "MidR",
+    "BotL", "BotC", "BotR"]
+    while True:
+        random.shuffle(positions)
+        random_move = random.choice(positions)
+        if table[random_move] != " ":
+            continue
+        if table[random_move] == " ":
+            return random_move
+    return None
 
-    print_board(board)
+def Main():
+    
+    The_Table(table)
     turn = "X"
 
     for _ in range(9):
-        choice = input(f"\n{turn}'s turn! Where do you want to place {turn}? (e.g., TopL, MidC, BotR): ")
-        
-        if board[choice] != " ":
-            print("\nSquare occupied! Try again.")
-            continue
+        if turn == "X":
+            choice = input(f"Where do you wanna put {turn} e.g(TopL,MidC,BotR): ")
+            table[choice] = turn
+            The_Table(table)
+            print()
 
-        board[choice] = turn
-        print_board(board)
+            if Check_Winner(table,turn):
+                print(f"\n{turn} is the winner!")
+                return
+            
+            print("Computer's turn".center(50,"-"))
 
-        if check_winner(board, turn):
-            print(f"\n{turn} wins the game! 🎉")
-            return
+        if turn == "O":
+            ai = computer_move()
+            if ai:
+                table[ai] = turn
+                The_Table(table)
+                
+                if Check_Winner(table,turn):
+                    print(f"\n{turn} is the winner!")
+                    return
 
-        turn = "O" if turn == "X" else "X"
 
-    print("\nIt's a draw!")
+        if turn == "X":
+            turn = "O"
+        else:
+            turn  = "X"
+
+    print("\nIts a draw")
 
 if __name__ == "__main__":
-    main()
+    Main()
