@@ -8,6 +8,13 @@ table = {"TopL": " ","TopC": " ","TopR": " ",
          "MidL": " ","MidC": " ","MidR": " ",
          "BotL": " ","BotC": " ","BotR": " "}
 
+win_conditions = [ 
+    ["TopL", "TopC", "TopR"], ["MidL", "MidC", "MidR"], ["BotL", "BotC", "BotR"],
+    ["TopL", "MidL", "BotL"], ["TopC", "MidC", "BotC"], ["TopR", "MidR", "BotR"],  
+    ["TopL", "MidC", "BotR"], ["TopR", "MidC", "BotL"]
+    ]
+    
+
 def The_Table(board):
     print(board["TopL"]+"|"+board["TopC"]+"|"+board["TopR"])
     print("-+-+-")
@@ -16,16 +23,22 @@ def The_Table(board):
     print(board["BotL"]+"|"+board["BotC"]+"|"+board["BotR"])
 
 def Check_Winner(table: dict,turn: str) -> bool:
-    win_conditions = [ 
-        ["TopL", "TopC", "TopR"], ["MidL", "MidC", "MidR"], ["BotL", "BotC", "BotR"],
-        ["TopL", "MidL", "BotL"], ["TopC", "MidC", "BotC"], ["TopR", "MidR", "BotR"],  
-        ["TopL", "MidC", "BotR"], ["TopR", "MidC", "BotL"]
-        ]
-    
+    global win_conditions
     for condition in win_conditions:
         if all(table[pos] == turn for pos in condition):
             return True
     return False
+
+def advanced_ai():
+    global win_conditions
+    for condition in win_conditions:
+        if table[condition[0]] == "O" and table[condition[1]] == "O" and table[condition[2]] == " ":
+            return condition[2]
+        elif table[condition[0]] == "O" and table[condition[2]] == "O" and table[condition[1]] == " ":
+            return condition[1]
+        elif table[condition[1]] == "O" and table[condition[2]] == "O" and table[condition[0]] == " ":
+            return condition[0]
+    return None
 
 def computer_move() -> str:
     global positions
@@ -66,7 +79,9 @@ def Main():
             print("Computer's turn".center(50,"-"))
 
         if turn == "O":
-            ai = computer_move()
+            ai = advanced_ai()
+            if not ai:
+                ai = computer_move()
             if ai:
                 table[ai] = turn
                 The_Table(table)
