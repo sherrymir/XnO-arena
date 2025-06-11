@@ -29,7 +29,7 @@ def Check_Winner(table: dict,turn: str) -> bool:
             return True
     return False
 
-def advanced_ai():
+def advanced_ai() -> str:
     global win_conditions
     for condition in win_conditions:
         if table[condition[0]] == "O" and table[condition[1]] == "O" and table[condition[2]] == " ":
